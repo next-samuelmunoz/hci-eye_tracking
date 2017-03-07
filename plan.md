@@ -1,15 +1,22 @@
 # Eye Tracking RoadMap
 
-## Introduction
+## Table of Contents
+* [Introduction](#intro)
+* [Data generation](#data)
+* [Features extraction](#features)
+* [Model](#model)
+* [Further steps](#further)
+
+
+## Introduction <a name="intro"></a>
 Supervised problem.
 
 ### Detected problems
 
 **Constants:**
-* Screen size
-* Screen resolution
+* Screen size/resolution
 * Webcam position
-* Webcam resolution
+* Webcam picture size/resolution
 
 **Variables:**
 * Image of the user
@@ -21,10 +28,25 @@ Supervised problem.
 
 
 
+## Data generation <a name="data"></a>
+### Game
 
-## 1 Features extraction
-1. Detect face. HAAR Cascade.
-1. Detect pupils. Extract eyes images.
+
+
+
+## Features extraction <a name="features"></a>
+
+### Simplest approach
+Steps:
+  1. HAAR Cascade to detect face.
+  1. Bounding boxes over the eyes.
+
+Features:
+  * Left and right eye images.
+  * Position in the webcam image of the pupils.
+
+### Facial points
+TODO  
 
 **Desired features**
 * Pupil locations in the image.
@@ -32,11 +54,15 @@ Supervised problem.
  * ¿Size?
 
 
-## 2 Data generation
-Game
 
 
-## 3 Model
+
+## Model <a name="model"></a>
+TO SEE:
+* Regression model (mo max-pooling)
+* LeNet
+* Siamese Nets
+* Concat features
 
 ### Topology
 
@@ -45,7 +71,7 @@ Game
 ### Tests
 
 
-## 4 Further steps
+## Further steps <a name="further"></a>
 
 ### Generalization to other platforms
 Fine tunning for fast calibration on platforms where training constants change.
