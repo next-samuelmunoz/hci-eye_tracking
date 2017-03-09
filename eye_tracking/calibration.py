@@ -41,7 +41,7 @@ data = Data(
     screen_diagonal=config.SCREEN_DIAGONAL,
     camera_position=config.CAM_POSITION
 )
-webcam = Webcam(config.CAM_DEVICE, resolution=(config.CAM_WIDTH, config.CAM_HEIGHT))
+webcam = Webcam(config.CAM_DEVICE, config.CAM_WIDTH, config.CAM_HEIGHT)
 pygame.init()
 screen = Screen(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
 

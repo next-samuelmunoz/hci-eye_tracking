@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-
+""" Use webcam with pygame.
+IMPORTANT:
+    I could not get resolutions higher than 640x480.
+"""
 
 from threading import Thread
 
@@ -9,13 +12,13 @@ from pygame import camera
 
 class WebcamThread(Thread):
 
-    def __init__(self, device, resolution, color='RGB'):
+    def __init__(self, device, width, height, color='RGB'):
         '''Intialize device
         '''
         camera.init()
         if not device:
             device = camera.list_cameras()[0]
-        self._cam = camera.Camera(device, resolution, color)
+        self._cam = camera.Camera(device, (width,height), color)
         self._cam.start()
         self.running = True
         self.img = None
