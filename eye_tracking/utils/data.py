@@ -50,4 +50,17 @@ class Data(object):
 
         TODO return iterator (picture path, x, y, time, screen params, cam params)
         """
-        pass
+        for directory,subdirs,files in os.walk(self.raw_data_path):
+            if files:
+                constants = dict(zip(
+                    ['game_id','screen_width','screen_height','screen_diagonal','camera_position'],
+                    os.path.basename(directory).split('_')
+                ))
+                for f in files:
+                    retval = dict(zip(
+                        ['timestamp', 'x', 'y'],
+                        os.path.splitext(f)[0].split('_')
+                    ))
+                    retval['img_path'] = os.path.join(directory, f)
+                    retval.update(constants)
+                    yield retval
