@@ -6,7 +6,7 @@ import pygame
 from pygame.locals import *
 
 import config
-from utils.webcam import Webcam
+from utils import Data, Webcam
 
 
 class Screen(object):
@@ -33,9 +33,22 @@ class Screen(object):
         pygame.display.update()
 
 
+# Global params
+data = Data(
+    raw_data_path=config.PATH_DATA_RAW,
+    screen_width=config.SCREEN_WIDTH,
+    screen_height=config.SCREEN_HEIGHT,
+    screen_diagonal=config.SCREEN_DIAGONAL,
+    camera_position=config.CAM_POSITION
+)
 webcam = Webcam(config.CAM_DEVICE, resolution=(config.CAM_WIDTH, config.CAM_HEIGHT))
 pygame.init()
 screen = Screen(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
+
+
+
+# New game
+data.new_game()
 fails = config.FAILS
 scores = []
 exit = False
@@ -54,6 +67,7 @@ while not exit:
                 mouse_x, mouse_y = event.pos
                 distance = (((x-mouse_x)**2+(y-mouse_y)**2)**0.5)/config.RADIUS
                 if distance<=1:  # Target is hit, take picture!
+                    webcam.capture(data.create_datum(mouse_x, mouse_y))
                     scores.append(int(((1-distance)*6)+5))
                     click = True
                 else:
@@ -61,6 +75,10 @@ while not exit:
                     if fails == 0:
                         exit = True
 
+
+#
+### Terminate game
+#
 webcam.close()
 print "HITS: {}".format(len(scores))
 print "PRECISSION: {}".format(sum(scores)/float(len(scores)))

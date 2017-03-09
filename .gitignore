@@ -1,2 +1,4 @@
 *.pyc
+eye_tracking/data
 venv
+config_local.py

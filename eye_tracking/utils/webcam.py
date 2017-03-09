@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 from threading import Thread
 
 import pygame
@@ -8,7 +9,7 @@ from pygame import camera
 
 class WebcamThread(Thread):
 
-    def __init__(self, device, resolution=(640,480), color='RGB'):
+    def __init__(self, device, resolution, color='RGB'):
         '''Intialize device
         '''
         camera.init()
