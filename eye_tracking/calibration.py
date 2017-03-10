@@ -16,7 +16,7 @@ class Screen(object):
         self.target = pygame.image.load(config.IMG_TARGET)
         self.screen = pygame.display.set_mode(
             (width, height),
-            FULLSCREEN|DOUBLEBUF
+            #FULLSCREEN|DOUBLEBUF
         )
 
     def print_target(self, x, y, size_x, size_y):
@@ -33,6 +33,18 @@ class Screen(object):
         pygame.display.update()
 
 
+    def print_webcam(self, img):
+        self.screen.blit(
+            pygame.transform.scale(
+                img, (config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
+            ),
+            (0,0)
+        )
+        pygame.display.update()
+
+
+
+
 # Global params
 data = Data(
     raw_data_path=config.PATH_DATA_RAW,
@@ -46,39 +58,48 @@ pygame.init()
 screen = Screen(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
 
 
-
 # New game
 data.new_game()
 fails = config.FAILS
 scores = []
 exit = False
+status = 'game'  # game, webcam
 while not exit:
     click = False
     x=random.randint(0, config.SCREEN_WIDTH)
     y=random.randint(0, config.SCREEN_HEIGHT)
-    screen.print_target(x, y, 150, 150)
+    if status == "game":
+        screen.print_target(x, y, 150, 150)
     while not click and not exit:
+        if status == "webcam":
+            screen.print_webcam(pygame.image.fromstring(*webcam.get_img()))
         for event in pygame.event.get():
             if event.type == KEYUP:
                 if event.key == K_ESCAPE:
-                    pygame.display.quit()
                     exit = True
-            elif event.type == MOUSEBUTTONDOWN:
-                mouse_x, mouse_y = event.pos
-                distance = (((x-mouse_x)**2+(y-mouse_y)**2)**0.5)/config.RADIUS
-                if distance<=1:  # Target is hit, take picture!
-                    webcam.capture(data.create_datum(mouse_x, mouse_y))
-                    scores.append(int(((1-distance)*6)+5))
+                elif event.key == K_1:
+                    status = "game"
                     click = True
-                else:
-                    fails -= 1
-                    if fails == 0:
-                        exit = True
+                elif event.key == K_2:
+                    status = "webcam"
+            elif event.type == MOUSEBUTTONDOWN:
+                if status == "game":
+                    mouse_x, mouse_y = event.pos
+                    distance = (((x-mouse_x)**2+(y-mouse_y)**2)**0.5)/config.RADIUS
+                    if distance<=1:  # Target is hit, take picture!
+                        webcam.capture(data.create_datum(mouse_x, mouse_y))
+                        scores.append(int(((1-distance)*6)+5))
+                        click = True
+                    else:
+                        fails -= 1
+                        if fails == 0:
+                            exit = True
 
 
 #
 ### Terminate game
 #
+pygame.display.quit()
 webcam.close()
 print "HITS: {}".format(len(scores))
 print "PRECISSION: {}".format(sum(scores)/float(len(scores)))

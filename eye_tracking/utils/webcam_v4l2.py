@@ -22,9 +22,6 @@ class WebcamThread(Thread):
         self.color = color
         self._cam = v4l2capture.Video_device(device)
         self.width, self.height = self._cam.set_format(width, height)
-        self._cam.create_buffers(1)
-        self._cam.queue_all_buffers()
-        self._cam.start()
         self.running = True
         self.img = None
         Thread.__init__(self)
@@ -33,18 +30,25 @@ class WebcamThread(Thread):
     def run(self):
         '''Thread loop. Read continuously from cam buffer.
         '''
-
+        self._cam.create_buffers(1)
+        self._cam.queue_all_buffers()
+        self._cam.start()
         while self.running:
             select.select((self._cam,), (), ())
+            self.img = self._cam.read_and_queue()
         self._cam.close()
 
 
     def capture(self, path_file):
         '''Capture image into a file
         '''
-        self.img = self._cam.read_and_queue()
         image = Image.frombytes(self.color, (self.width, self.height), self.img)
         image.save(path_file)
+
+
+    def get_img(self):
+        image = Image.frombytes(self.color, (self.width, self.height), self.img)
+        return (image.tobytes(), image.size, image.mode)
 
 
     def close(self):
@@ -63,6 +67,9 @@ class Webcam(object):
 
     def capture(self, *args, **kwargs):
         self.thread.capture(*args, **kwargs)
+
+    def get_img(self, *args, **kwargs):
+        return self.thread.get_img(*args, **kwargs)
 
     def close(self):
         self.thread.close()
