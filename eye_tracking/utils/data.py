@@ -11,13 +11,15 @@ class Data(object):
 
     def __init__(self, raw_data_path,
         screen_width='', screen_height='', screen_diagonal='',
-        camera_position=''
+        camera_position='', glasses=False
     ):
         """Constructor
         """
         self.raw_data_path = raw_data_path
-        self.config_string = "{}_{}_{}_{}". format(
-            screen_width, screen_height, screen_diagonal, camera_position
+        glasses_str = 'glasses-yes' if glasses else 'glasses-no'
+        self.config_string = "{}_{}_{}_{}_{}". format(
+            screen_width, screen_height, screen_diagonal, camera_position,
+            glasses_str
         )
         self.game_id = None
         self.game_path = None
@@ -53,9 +55,13 @@ class Data(object):
         for directory,subdirs,files in os.walk(self.raw_data_path):
             if files:
                 constants = dict(zip(
-                    ['game_id','screen_width','screen_height','screen_diagonal','camera_position'],
+                    ['game_id','screen_width','screen_height','screen_diagonal','camera_position','glasses'],
                     os.path.basename(directory).split('_')
                 ))
+                if constants['glasses'] == 'glasses-yes':
+                    constants['glasses'] = True
+                else:
+                    constants['glasses'] = False
                 for f in files:
                     retval = dict(zip(
                         ['timestamp', 'x', 'y'],
