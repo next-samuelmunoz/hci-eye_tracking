@@ -2,6 +2,7 @@
 """Utilities to deal with generated pictures.
 """
 
+import json
 import os
 import time
 import uuid
@@ -45,6 +46,11 @@ class Data(object):
                 y=y
             )
         )
+
+
+    def save_stats(self, stats):
+        with open(os.path.join(self.game_path, 'stats.json'),'w+') as fd:
+            json.dump(stats, fd)
 
 
     def iterate(self):

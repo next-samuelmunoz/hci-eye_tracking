@@ -28,7 +28,8 @@ class StageWebcam(object):
                     exit = True
 
     def _print_screen(self, blink):
-        color = (255,255,255) if blink else (150,150,150)
+        color1 = (255,255,255) if blink else (150,150,150)
+        color2 = (255,255,0) if blink else (0,255,0)
         self.screen.blit(
             pygame.transform.scale(
                 pygame.image.fromstring(*self.webcam.get_img()),
@@ -37,12 +38,10 @@ class StageWebcam(object):
             (0,0)
         )
         y_pos = 15
-        pygame.draw.ellipse(self.screen, color, (
-            self.config.SCREEN_WIDTH/2-self.config.SCREEN_HEIGHT/3, 0,
-            self.config.SCREEN_HEIGHT/1.5, self.config.SCREEN_HEIGHT
-        ), 5)
+        pygame.draw.line(self.screen, color2, (self.config.SCREEN_WIDTH/2,0),(self.config.SCREEN_WIDTH/2,self.config.SCREEN_HEIGHT),1)
+        pygame.draw.line(self.screen, color2, (0,self.config.SCREEN_HEIGHT/2),(self.config.SCREEN_WIDTH,self.config.SCREEN_HEIGHT/2),1)
         pygame.draw.rect(self.screen, (0,0,0), (0,y_pos,self.config.SCREEN_WIDTH,35), )
         self.screen.blit(
-            self.font.render("Please, center yourself in the image and press any key.", 1, color),
+            self.font.render("Please, center yourself in the image and press any key.", 1, color1),
             (self.config.SCREEN_WIDTH/5, y_pos)
         )

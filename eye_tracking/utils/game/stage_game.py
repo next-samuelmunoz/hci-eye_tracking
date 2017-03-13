@@ -2,6 +2,7 @@
 """Game loop
 """
 
+import time
 import random
 
 import pygame
@@ -16,23 +17,28 @@ class StageGame(object):
         self.config = config
         self.background = pygame.image.load(self.config.IMG_BACKGROUND)
         self.target = pygame.image.load(self.config.IMG_TARGET)
-        self.font = pygame.font.SysFont("monospace", 20)
+        self.font = pygame.font.SysFont("monospace", 30)
 
 
     def loop(self):
         scores = []
+        times = []
         fails = self.config.FAILS
         exit = False
         start_time = pygame.time.get_ticks()
         while not exit:
             click = False
-            pygame.mouse.set_pos(self.config.SCREEN_WIDTH/2, self.config.SCREEN_HEIGHT/2)
+            pygame.mouse.set_pos(
+                random.randint(0, self.config.SCREEN_WIDTH),
+                random.randint(0, self.config.SCREEN_HEIGHT)
+            )
+            drift_x, drift_y = random.normalvariate(0,3), random.normalvariate(0,1)
             x=random.randint(0, self.config.SCREEN_WIDTH)
             y=random.randint(0, self.config.SCREEN_HEIGHT)
             self._print_target(x, y, 150, 150)
             while not click and not exit:
-                time = self.config.TIME_GAME - int((pygame.time.get_ticks()-start_time)/1000)
-                self._print_stats(sum(scores), time)
+                remaining_time = self.config.TIME_GAME - int((pygame.time.get_ticks()-start_time)/1000)
+                self._print_stats(sum(scores), remaining_time)
                 for event in pygame.event.get():
                     if event.type == KEYUP:
                         if event.key == K_ESCAPE:
@@ -43,14 +49,21 @@ class StageGame(object):
                         if distance<=1:  # Target is hit, take picture!
                             self.webcam.capture(self.data.create_datum(mouse_x, mouse_y))
                             scores.append(int(((1-distance)*6)+5))
+                            times.append(time.time())
                             click = True
                         else:
                             fails -= 1
                             if fails == 0:
                                 exit = True
-                if time<=0:
+                if pygame.time.get_ticks()%15==1:
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    pygame.mouse.set_pos(
+                        mouse_x+drift_x,
+                        mouse_y+drift_y
+                    )
+                if remaining_time<=0:
                     exit = True
-        return scores
+        return (scores,times)
 
 
 
@@ -69,19 +82,19 @@ class StageGame(object):
 
     def _print_stats(self, score, time):
         pygame.draw.rect(self.screen, (0,0,0), (
-            self.config.SCREEN_WIDTH-200, 5,
-            190, 100
+            self.config.SCREEN_WIDTH-250, 5,
+            230, 100
         ), 0)
         pygame.draw.rect(self.screen, (255,255,255), (
-            self.config.SCREEN_WIDTH-200, 5,
-            188, 100
+            self.config.SCREEN_WIDTH-250, 5,
+            228, 100
         ), 1)
         self.screen.blit(
-            self.font.render("TIME: {}".format(time), 1, (255,255,0)),
-            (self.config.SCREEN_WIDTH-190, 25)
+            self.font.render("SCORE: {}".format(score), 1, (255,255,0)),
+            (self.config.SCREEN_WIDTH-240, 20)
         )
         self.screen.blit(
-            self.font.render("SCORE: {}".format(score), 1, (255,255,0)),
-            (self.config.SCREEN_WIDTH-190, 75)
+            self.font.render("TIME: {}".format(time), 1, (255,255,0)),
+            (self.config.SCREEN_WIDTH-240, 70)
         )
         pygame.display.update()

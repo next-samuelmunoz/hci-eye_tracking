@@ -40,7 +40,7 @@ IMG_TARGET = 'img/target01.png'
 
 
 # OTHER
-TIME_GAME = 90  # Seconds
+TIME_GAME = 60  # Seconds
 FAILS = 5  # Hits a user can fail
 RADIUS = 75.0  # Radius of the target, centered in the image
 

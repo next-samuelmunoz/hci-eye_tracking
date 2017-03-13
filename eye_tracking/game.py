@@ -20,9 +20,8 @@ pygame.init()
 pygame.font.init()
 screen = pygame.display.set_mode(
     (config.SCREEN_WIDTH, config.SCREEN_HEIGHT),
-    #pygame.locals.FULLSCREEN|pygame.locals.DOUBLEBUF
+    pygame.locals.FULLSCREEN|pygame.locals.DOUBLEBUF
 )
-
 
 
 #
@@ -47,7 +46,7 @@ data = Data(
 )
 data.new_game()
 stage_game = utils.game.StageGame(screen, webcam, data, config)
-scores = stage_game.loop()
+scores,times = stage_game.loop()
 webcam.close()
 
 
@@ -56,8 +55,13 @@ webcam.close()
 #
 pygame.font.quit()
 pygame.display.quit()
-
+# Save data
+data.save_stats({
+    "scores": scores,
+    "times": times
+})
+# Print stats
 print "HITS: {}".format(len(scores))
-print "PRECISSION: {}".format(sum(scores)/float(len(scores)))
-# print "REMAINING TIME: -".format()
+print "HITS PER SECOND: {}".format(len(scores)/float(config.TIME_GAME))
+print "AVERAGE SCORE: {}".format(sum(scores)/float(len(scores)))
 print "TOTAL SCORE: {}".format(sum(scores))
