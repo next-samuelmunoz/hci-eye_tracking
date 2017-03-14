@@ -47,9 +47,9 @@ class StageGame(object):
                         mouse_x, mouse_y = event.pos
                         distance = (((x-mouse_x)**2+(y-mouse_y)**2)**0.5)/self.config.RADIUS
                         if distance<=1:  # Target is hit, take picture!
-                            self.webcam.capture(self.data.create_datum(mouse_x, mouse_y))
-                            scores.append(int(((1-distance)*6)+5))
-                            times.append(time.time())
+                            score = int(((1-distance)*6)+5)
+                            self.webcam.capture(self.data.create_datum(mouse_x, mouse_y, score))
+                            scores.append(score)
                             click = True
                         else:
                             fails -= 1
@@ -63,7 +63,7 @@ class StageGame(object):
                     )
                 if remaining_time<=0:
                     exit = True
-        return (scores,times)
+        return scores
 
 
 

@@ -2,7 +2,7 @@
 """Utilities to deal with generated pictures.
 """
 
-import json
+
 import os
 import time
 import uuid
@@ -35,22 +35,18 @@ class Data(object):
         os.makedirs(self.game_path)
 
 
-    def create_datum(self, x, y):
+    def create_datum(self, x, y, score):
         """Generate a suitable path for the webcam image.
         """
         return os.path.join(
             self.game_path,
-            "{epoch}_{x}_{y}.jpg".format(
+            "{epoch}_{x}_{y}_{score}.jpg".format(
                 epoch=int(time.time()),
                 x=x,
-                y=y
+                y=y,
+                score=score
             )
         )
-
-
-    def save_stats(self, stats):
-        with open(os.path.join(self.game_path, 'stats.json'),'w+') as fd:
-            json.dump(stats, fd)
 
 
     def iterate(self):
@@ -70,7 +66,7 @@ class Data(object):
                     constants['glasses'] = False
                 for f in files:
                     retval = dict(zip(
-                        ['timestamp', 'x', 'y'],
+                        ['timestamp', 'x', 'y', 'score'],
                         os.path.splitext(f)[0].split('_')
                     ))
                     retval['img_path'] = os.path.join(directory, f)

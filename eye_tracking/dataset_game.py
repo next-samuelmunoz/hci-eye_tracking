@@ -46,7 +46,7 @@ data = Data(
 )
 data.new_game()
 stage_game = utils.game.StageGame(screen, webcam, data, config)
-scores,times = stage_game.loop()
+scores = stage_game.loop()
 webcam.close()
 
 
@@ -55,11 +55,6 @@ webcam.close()
 #
 pygame.font.quit()
 pygame.display.quit()
-# Save data
-data.save_stats({
-    "scores": scores,
-    "times": times
-})
 # Print stats
 print "HITS: {}".format(len(scores))
 print "HITS PER SECOND: {}".format(len(scores)/float(config.TIME_GAME))
