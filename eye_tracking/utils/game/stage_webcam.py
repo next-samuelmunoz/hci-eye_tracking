@@ -26,6 +26,8 @@ class StageWebcam(object):
             for event in pygame.event.get():
                 if event.type == KEYUP:
                     exit = True
+                elif event.type == MOUSEBUTTONUP:
+                    exit = True
 
     def _print_screen(self, blink):
         color1 = (255,255,255) if blink else (150,150,150)
@@ -42,6 +44,6 @@ class StageWebcam(object):
         pygame.draw.line(self.screen, color2, (0,self.config.SCREEN_HEIGHT/2),(self.config.SCREEN_WIDTH,self.config.SCREEN_HEIGHT/2),1)
         pygame.draw.rect(self.screen, (0,0,0), (0,y_pos,self.config.SCREEN_WIDTH,35), )
         self.screen.blit(
-            self.font.render("Please, center yourself in the image and press any key.", 1, color1),
+            self.font.render("Please, center yourself in the image and press any key or mouse.", 1, color1),
             (self.config.SCREEN_WIDTH/5, y_pos)
         )
