@@ -2,8 +2,16 @@
 
 In order to generate a dataset of people looking at some specific point in the screen, a game has been developed.
 
-The `dataset_game.py` file contains this game with the followingstages:
-## Game stages
+## Table of contents
+* [Game stages](#stages)
+* [Dataset](#dataset)
+* [Installation](#installation)
+* [Configuration](#configuration)
+* [Troubleshooting](#troubleshooting)
+
+
+## Game stages <a name="stages"></a>
+The `dataset_game.py` file contains this game with the following stages:
 
 ### Glasses
 The user is asked if they wear glasses.
@@ -21,11 +29,11 @@ Each time the user hits a target, a photo is added to the dataset.
 When the game is ended, some stats are shown, such as:
 * Number of hits
 * Number of hits per second
-* Average precission 5-10
+* Average precision 5-10
 * Total score
 
 
-## Dataset
+## Dataset <a name="dataset"></a>
 
 ### Directories
 Everytime a game is played, a directory is added to `data/raw`, the name of the directory contains the following information separated by underscores "_ ".
@@ -44,14 +52,22 @@ Inside the game associated directory lay corresponding images. The name of the i
 * Score. Where the user hit the target (5-10)
 
 
-## Installation
+## Installation <a name="installation"></a>
+1. Clone the project.
+1. Create a Python virtual environment.
+1. `pip install -r requirements/requirements-dataset.txt`
 
 
-## Configuration
+## Configuration <a name="configuration"></a>
+Copy the file `config.py` into `config_local.py` and edit what you need.
+Some constants you may want to alter are:
+* SCREEN_WIDTH and SCREEN_HEIGHT: to set the screen dimensions
+* CAM_DEVICE, CAM_WIDTH and CAM_HEIGHT: to configure the webcam.
+* TIME_GAME: to set how long a game is.
 
 
 
-## Troubleshooting
+## Troubleshooting <a name="troubleshooting"></a>
 ### I can't install v4l2capture
 The `v4l2capture` python package requires the v4l libraries.
 ```bash
