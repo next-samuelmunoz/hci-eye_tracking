@@ -71,4 +71,6 @@ class Data(object):
                     ))
                     retval['img_path'] = os.path.join(directory, f)
                     retval.update(constants)
+                    for k in ['timestamp', 'x', 'y', 'score','screen_width','screen_height','screen_diagonal']:
+                        retval[k] = int(retval[k])
                     yield retval
