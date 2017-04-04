@@ -57,12 +57,20 @@
 * CODE: https://github.com/trishume/eyeLike
 	* Implements this paper. http://www.inb.uni-luebeck.de/publikationen/pdfs/TiBa11b.pdf
 * CONCLUSION:
- * PoC. Last commit on 2015.
+	* PoC. Last commit on 2015.
 
 ## EyeTracker
 * CODE: https://github.com/xef6/eyetracker
 * CONCLUSION:
 	* PoC. Last commit on 2013.
+
+## WebGazer.js
+* MAIN PAGE: https://webgazer.cs.brown.edu/
+* CODE: https://github.com/brownhci/WebGazer
+* CONCLUSION:
+	* Model is a regression. Based on [regression.js](http://tom-alexander.github.io/regression-js/)
+	* JavaScript may not be the better language for research.
+
 
 
 
