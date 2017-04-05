@@ -23,7 +23,7 @@ API_KEY = config.get('credentials', 'COGNITIVE_API_KEY')
 
 # Detect face for data corresponding to a given file
 def detect_face(data, IS_BINARY):
-    myjson = "{'result': 'FAIL'}"
+    myjson = None
     content_type = 'application/octet-stream'
     if (not IS_BINARY):
         print "Is not binary"
@@ -53,13 +53,14 @@ def detect_face(data, IS_BINARY):
 
         response = requests.post(url, data=data, headers= headers)
 
+        # Check rate limits and retry if required
+        while response.status_code == 429:
+            print "Rate limit exceeded. Waiting 60s..."
+            sleep(60)
+            response = requests.post(url, data=data, headers= headers)
+
         if response.status_code is not 200:
-            # Check rate limits
-            if response.status_code == 429:
-                print "Rate limit exceeded. Waiting 60s..."
-                sleep(60)
-            else:
-                raise Exception(response.status_code)
+            raise Exception(response.status_code)
 
         myjson = response.json()
     except Exception as e:
@@ -71,13 +72,18 @@ def detect_face(data, IS_BINARY):
 def detect_faces(input_dir, output_dir, max_images=5000):
     count = 0
     for my_sub_dir in os.listdir(input_dir):
+
         my_input_dir = input_dir + my_sub_dir
         print my_input_dir
         dest_dir = output_dir + my_sub_dir
         for filename in os.listdir(my_input_dir):
+            count=count+1
+            if count % 100 == 0:
+                print "%i images processed" %count
+
             # Check if the file has been already processed
             if os.path.exists(os.path.join(dest_dir,filename.replace("jpg", "json"))):
-                print "Skip already processed file %s" %filename
+                #print "Skip already processed file %s" %filename
                 continue
             with open(os.path.join(my_input_dir, filename), "rb") as f_in:
                 data = f_in.read()
@@ -86,11 +92,13 @@ def detect_faces(input_dir, output_dir, max_images=5000):
             if not os.path.exists(dest_dir):
                 os.makedirs(dest_dir)
 
-            with open(os.path.join(dest_dir, filename.replace("jpg", "json")), "w+") as f_out:
-                json.dump(myjson, f_out)
-            count=count+1
+            if (myjson):
+                with open(os.path.join(dest_dir, filename.replace("jpg", "json")), "w+") as f_out:
+                    json.dump(myjson, f_out)
+
             if count >= max_images:
                 return
+
 
 print "INPUT_PATH is %s" %INPUT_PATH
 print "OUTPUT_PATH is %s" %OUTPUT_PATH
