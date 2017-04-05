@@ -10,7 +10,7 @@ config = ConfigParser.RawConfigParser()
 config.read('config.cfg')
 
 INPUT_PATH = config.get('general', 'OUTPUT_PATH')
-OUTPUT_PATH = INPUT_PATH.replace("HCI-ET-cognitive_dataset", "HCI-ET-cognitive_dataset_fixed")
+OUTPUT_PATH_FIXED = config.get('general', 'OUTPUT_PATH_FIXED')
 
 
 def get_area(face):
@@ -65,7 +65,7 @@ def check_faces(input_dir, output_dir, max_images=5000):
                 return
 
 
-check_faces(INPUT_PATH, OUTPUT_PATH)
+check_faces(INPUT_PATH, OUTPUT_PATH_FIXED)
 
 
 
