@@ -22,3 +22,7 @@ Count number of faces
 ```
 grep -or faceR $OUTPUT_PATH | uniq --count | grep -v "1\s"
 ```
+Check eye landmarks for biggest faces
+```
+python check-face-features.py
+```
