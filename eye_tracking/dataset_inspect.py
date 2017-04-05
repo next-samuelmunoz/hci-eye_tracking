@@ -13,7 +13,9 @@ from utils import Data
 def loop(screen, data_list):
     i_data = 0
     exit = 0
+    dot = True
     while not exit:
+        print(data_list[i_data])
         screen.blit(
             pygame.transform.scale(
                 pygame.transform.flip(
@@ -24,7 +26,8 @@ def loop(screen, data_list):
             ),
             (0,0)
         )
-        pygame.draw.circle(screen, (255,0,0), (data_list[i_data]['x'],data_list[i_data]['y']), 25, 0)
+        if dot:
+            pygame.draw.circle(screen, (255,0,0), (data_list[i_data]['x'],data_list[i_data]['y']), 25, 0)
         pygame.display.update()
         click = False
         while not click:
@@ -41,6 +44,9 @@ def loop(screen, data_list):
                         if i_data>0:
                             i_data -= 1
                             click = True
+                    elif event.key == K_d:
+                        dot = False if dot else True
+                        click = True
 
 
 
