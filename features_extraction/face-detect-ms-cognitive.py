@@ -56,8 +56,10 @@ def detect_face(data, IS_BINARY):
         if response.status_code is not 200:
             # Check rate limits
             if response.status_code == 429:
+                print "Rate limit exceeded. Waiting 60s..."
                 sleep(60)
-            raise Exception(response.status)
+            else:
+                raise Exception(response.status_code)
 
         myjson = response.json()
     except Exception as e:
@@ -71,12 +73,16 @@ def detect_faces(input_dir, output_dir, max_images=5000):
     for my_sub_dir in os.listdir(input_dir):
         my_input_dir = input_dir + my_sub_dir
         print my_input_dir
+        dest_dir = output_dir + my_sub_dir
         for filename in os.listdir(my_input_dir):
+            # Check if the file has been already processed
+            if os.path.exists(os.path.join(dest_dir,filename.replace("jpg", "json"))):
+                print "Skip already processed file %s" %filename
+                continue
             with open(os.path.join(my_input_dir, filename), "rb") as f_in:
                 data = f_in.read()
             myjson = detect_face(data, IS_BINARY)
 
-            dest_dir = output_dir + my_sub_dir
             if not os.path.exists(dest_dir):
                 os.makedirs(dest_dir)
 
