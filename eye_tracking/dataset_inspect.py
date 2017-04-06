@@ -10,12 +10,14 @@ from pygame.locals import *
 import config
 from utils import Data
 
+def get_img_id(game_id, timestamp):
+    return '{}_{}'.format(game_id, timestamp)
 
 def loop(data_list):
     pygame.init()
     i_data = 0
     exit = 0
-    flag_dot = True
+    flag_dot = False
     flag_ds_01_cognitive = False
     ds_01_cognitive = None
     # Calculate webcam image position
@@ -40,8 +42,8 @@ def loop(data_list):
                     with open(config.PATH_FEATURES01_COGNITIVE_CSV,'rb') as fd:
                         csv_reader = csv.DictReader(fd)
                         for row in csv_reader:
-                            ds_01_cognitive[row['img']] = row
-                features = ds_01_cognitive[data_list[i_data]['img_path']]
+                            ds_01_cognitive[get_img_id(row['game_id'],row['timestamp'])] = row
+                features = ds_01_cognitive[get_img_id(data_list[i_data]['game_id'],data_list[i_data]['timestamp'])]
                 pygame.draw.rect( # Face
                     img, (0,0,255),
                     [int(features[x]) for x in ('face_x','face_y','face_width','face_height')],
@@ -59,7 +61,7 @@ def loop(data_list):
                 )
                 print features
             except Exception as e:
-                print "Dataset cognitive failed: {}.".format(e.message)
+                print "Dataset cognitive failed: {}".format(e.message)
         screen.fill((0,0,0))
         screen.blit(img, img_pos)
         if flag_dot:  # Show dot
@@ -67,25 +69,27 @@ def loop(data_list):
         pygame.display.update()
         click = False
         while not click:
-            for event in pygame.event.get():
-                if event.type == KEYUP:
-                    if event.key == K_ESCAPE:
-                        exit = True
+            # for event in pygame.event.get():
+            event = pygame.event.wait()
+            if event.type == KEYUP:
+                if event.key == K_ESCAPE:
+                    exit = True
+                    click = True
+                elif event.key == K_RIGHT:
+                    if i_data<len(data_list)-1:
+                        i_data += 1
                         click = True
-                    elif event.key == K_RIGHT:
-                        if i_data<len(data_list)-1:
-                            i_data += 1
-                            click = True
-                    elif event.key == K_LEFT:
-                        if i_data>0:
-                            i_data -= 1
-                            click = True
-                    elif event.key == K_d: # Switch dot (where the user looks)
-                        flag_dot = False if flag_dot else True
+                elif event.key == K_LEFT:
+                    if i_data>0:
+                        i_data -= 1
                         click = True
-                    elif event.key == K_1: # Switch DS01 MS Cognitive features
-                        flag_ds_01_cognitive = False if flag_ds_01_cognitive else True
-                        click = True
+                elif event.key == K_d: # Switch dot (where the user looks)
+                    flag_dot = False if flag_dot else True
+                    click = True
+                elif event.key == K_1: # Switch DS01 MS Cognitive features
+                    flag_ds_01_cognitive = False if flag_ds_01_cognitive else True
+                    click = True
+            pygame.event.clear()
     pygame.display.quit()
 
 
