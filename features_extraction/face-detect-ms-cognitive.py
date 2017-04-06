@@ -79,7 +79,7 @@ def detect_faces(input_dir, output_dir, max_images=5000):
         for filename in os.listdir(my_input_dir):
             count=count+1
             if count % 100 == 0:
-                print "%i images processed" %count
+                print "{} images processed".format(count)
 
             # Check if the file has been already processed
             if os.path.exists(os.path.join(dest_dir,filename.replace("jpg", "json"))):
@@ -100,8 +100,8 @@ def detect_faces(input_dir, output_dir, max_images=5000):
                 return
 
 
-print "INPUT_PATH is %s" %INPUT_PATH
-print "OUTPUT_PATH is %s" %OUTPUT_PATH
+print "INPUT_PATH is {}".format(INPUT_PATH)
+print "OUTPUT_PATH is {}".format(OUTPUT_PATH)
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)
 

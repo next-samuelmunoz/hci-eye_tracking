@@ -24,7 +24,7 @@ def check_biggest_face(filename):
     mylist = map(lambda x: get_area(x['faceRectangle']), myarray)
     maxindex = mylist.index(max(mylist))
     if (maxindex is not 0):
-        print "%i: %s" %(maxindex, mylist)
+        print "{}: {}".format(maxindex, mylist)
 
     # Check eye landmarks for the biggest face
     landmarks = myarray[maxindex]["faceLandmarks"]
@@ -47,7 +47,7 @@ def check_faces(input_dir, output_dir, max_images=5000):
         for filename in os.listdir(my_input_dir):
             count=count+1
             if count % 100 == 0:
-                print "%i images processed" %count
+                print "{} images processed".format(count)
 
             # Check if the file has been already processed
             if os.path.exists(os.path.join(dest_dir,filename.replace("json", "fix.json"))):
