@@ -4,6 +4,7 @@ In order to train a machine learning model, the raw dataset of photographs of pe
 
 ## Table of contents
 * [Microsoft Cognitive features](#msc_features)
+* [Dlib features](#dlib_features)
 * [Features01](#features01)
 
 
@@ -33,6 +34,26 @@ Check eye landmarks for biggest faces
 ```
 python check-face-features.py
 ```
+
+## Dlib features  <a name="dlib_features"></a>
+The program `eye_tracking/features_dlib.py` takes the images from the raw dataset and generates and generates a CSV file with 72 points.
+
+* [Dlib library](http://dlib.net/)
+* [Trained facial shape predictor](http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2)
+
+### Points description
+* face.< X >: this points (x, y, width, height) define the bounding box for the face.
+* < number >.x, < number >.y: the identified point.
+  * There are 68 of these points. Numbered from 0 to 67.
+  Substract one to the point in the image.
+  ![Point description](img/dlib_68_points.png)
+
+
+
+ <a name="msc_features"></a>
+
+
+
 
 
 ## Features01 <a name="features01"></a>
