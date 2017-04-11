@@ -97,7 +97,7 @@ if __name__=="__main__":
                 print datum_cognitive
                 print datum_new
         else:
-            print "[WARNING] '{}'' NOT FOUND".format(json_cognitive_path)
+            print "[WARNING] '{}' NOT FOUND".format(json_cognitive_path)
     # Save dataset
     with open(config.PATH_FEATURES01_COGNITIVE_CSV,'wb') as fd:
         csv_writer = csv.DictWriter(fd, fieldnames=data_cognitive[0].keys())
