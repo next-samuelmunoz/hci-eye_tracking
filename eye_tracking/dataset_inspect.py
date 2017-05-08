@@ -13,13 +13,19 @@ from utils import Data
 def get_img_id(game_id, timestamp):
     return '{}_{}'.format(game_id, timestamp)
 
+DATASETS_01 = {
+    False: None,
+    config.PATH_FEATURES01_COGNITIVE_CSV: None,
+    config.PATH_FEATURES01_DLIB_CSV: None
+}
+
+
 def loop(data_list):
     pygame.init()
     i_data = 0
     exit = 0
     flag_dot = False
-    flag_ds_01_cognitive = False
-    ds_01_cognitive = None
+    ds01_key_index = 0
     # Calculate webcam image position
     img = pygame.image.load(data_list[i_data]['img_path'])
     img_w, img_h = img.get_rect().size
@@ -35,15 +41,17 @@ def loop(data_list):
         img = pygame.image.load(data_list[i_data]['img_path'])
         print(data_list[i_data])
         #Print user screen limits
-        if flag_ds_01_cognitive:  # Show detected features
+        ds01_key = DATASETS_01.keys()[ds01_key_index]
+        print ds01_key
+        if ds01_key:  # Show detected features
             try:
-                if ds_01_cognitive==None: # Load dataset
-                    ds_01_cognitive = {}
-                    with open(config.PATH_FEATURES01_COGNITIVE_CSV,'rb') as fd:
+                if DATASETS_01[ds01_key]==None: # Load dataset
+                    DATASETS_01[ds01_key] = {}
+                    with open(ds01_key,'rb') as fd:
                         csv_reader = csv.DictReader(fd)
                         for row in csv_reader:
-                            ds_01_cognitive[get_img_id(row['game_id'],row['timestamp'])] = row
-                features = ds_01_cognitive[get_img_id(data_list[i_data]['game_id'],data_list[i_data]['timestamp'])]
+                            DATASETS_01[ds01_key][get_img_id(row['game_id'],row['timestamp'])] = row
+                features = DATASETS_01[ds01_key][get_img_id(data_list[i_data]['game_id'],data_list[i_data]['timestamp'])]
                 pygame.draw.rect( # Face
                     img, (0,0,255),
                     [int(features[x]) for x in ('face_x','face_y','face_width','face_height')],
@@ -61,7 +69,7 @@ def loop(data_list):
                 )
                 print features
             except Exception as e:
-                print "Dataset cognitive failed: {}".format(e.message)
+                print "Dataset {} failed: {}".format(ds01_key, e.message)
         screen.fill((0,0,0))
         screen.blit(img, img_pos)
         if flag_dot:  # Show dot
@@ -86,8 +94,9 @@ def loop(data_list):
                 elif event.key == K_d: # Switch dot (where the user looks)
                     flag_dot = False if flag_dot else True
                     click = True
-                elif event.key == K_1: # Switch DS01 MS Cognitive features
-                    flag_ds_01_cognitive = False if flag_ds_01_cognitive else True
+                elif event.key == K_1: # Switch DS01 mscognitive, dlib
+                    ds01_key_index = (ds01_key_index+1) % len(DATASETS_01)
+                    print ds01_key_index
                     click = True
             pygame.event.clear()
     pygame.display.quit()
