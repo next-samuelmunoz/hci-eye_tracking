@@ -10,7 +10,7 @@ def data_augmentation(img, transformations=[]):
     Parameters
     ----------
     img:
-        Opened image
+        Opened image with skimage.io.imread()
     transformations: function(img)
         Function to augment the image.
 
@@ -38,6 +38,13 @@ def mirror(img):
 
 def noise(img):
     """Add some noise
+    """
+    yield img
+    pass
+
+
+def luminance(img):
+    """Change ilumination
     """
     yield img
     pass
