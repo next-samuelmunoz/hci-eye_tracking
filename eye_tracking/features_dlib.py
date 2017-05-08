@@ -15,7 +15,7 @@ import dlib
 from skimage import io
 
 
-class Features01(object):
+class FeaturesDlib(object):
     def __init__(self, predictor_path ):
         self.detector = dlib.get_frontal_face_detector()
         self.predictor = dlib.shape_predictor(predictor_path)
@@ -54,7 +54,7 @@ if __name__=="__main__":
         print("Folder {} exists, no need to generate dataset.".format(config.PATH_DATA_DLIB))
         exit()
     os.makedirs(config.PATH_DATA_DLIB)
-    features = Features01(config.PATH_DLIB_MODEL)
+    features = FeaturesDlib(config.PATH_DLIB_MODEL)
     data = Data(config.PATH_DATA_RAW)
     i = 0
     with open(config.PATH_DATA_DLIB_CSV,'wb') as fd:
