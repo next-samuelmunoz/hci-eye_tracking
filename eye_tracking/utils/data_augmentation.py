@@ -65,7 +65,7 @@ def luminance(img):
 def loop(data_list):
     for i_data in range(len(data_list)):
         img = io.imread(data_list[i_data]['img_path'])
-        print(data_list[i_data])
+        #print(data_list[i_data])
 
         mypath = data_list[i_data]['img_path'].replace(PATH_DATA_RAW, PATH_DATA_AUGMENTED)
         dest_dir = os.path.dirname(mypath)
