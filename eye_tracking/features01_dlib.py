@@ -30,10 +30,10 @@ EYE_BBOX_SCALE_HEIGHT = 1.7
 
 def extract_eye(img, (bbox_x, bbox_y, bbox_w, bbox_h), (size_x, size_y), dest_path):
     try:
-        img_eye = img[bbox_x:bbox_y, bbox_x+bbox_w:bbox_y+bbox_h]
+        img_eye = img[bbox_y:bbox_y+bbox_h, bbox_x:bbox_x+bbox_w]
         img_eye = skimage.color.rgb2gray(img_eye)
         img_eye = skimage.exposure.equalize_hist(img_eye)
-        img_eye = skimage.transform.resize(img_eye,(size_x, size_y))
+        img_eye = skimage.transform.resize(img_eye,(size_y, size_x))  # Rows x Cols
         skimage.io.imsave(dest_path, img_eye)
     except Exception as e:
         print locals()
@@ -97,12 +97,12 @@ if __name__=="__main__":
                 eye_path = hashlib.md5(img_path).hexdigest()
                 for eye in ('eye_left','eye_right'):
                     f[eye+'_image'] = eye_path+'_'+eye+'.jpg'
-                    # extract_eye(
-                    #     img,
-                    #     (f[eye+'_x'], f[eye+'_y'],f[eye+'_width'] ,f[eye+'_height']),
-                    #     config.FEATURES01_EYES_SIZE,
-                    #     config.PATH_DATA_FEATURES01_DLIB+f[eye+'_image']
-                    # )
+                    extract_eye(
+                        img,
+                        (f[eye+'_x'], f[eye+'_y'],f[eye+'_width'] ,f[eye+'_height']),
+                        config.FEATURES01_EYES_SIZE,
+                        config.PATH_DATA_FEATURES01_DLIB+f[eye+'_image']
+                    )
                 if i==0:
                     csv_writer = csv.DictWriter(fd, fieldnames=f.keys())
                     csv_writer.writeheader()
