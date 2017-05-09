@@ -19,6 +19,7 @@ import skimage.transform
 
 import config
 from utils import Data
+from utils import data_augmentation
 from features_dlib import FeaturesDlib
 
 
@@ -82,31 +83,41 @@ if __name__=="__main__":
     with open(config.PATH_FEATURES01_DLIB_CSV,'wb') as fd:
         for datum in data.iterate():
             img_path = datum['img_path']
-            img = skimage.io.imread(img_path)
-            # TODO: data augmentation in memory, nest in a loop
-            f = features.extract_features(img)
-            if f == -1:  # No face
-                print "[WARNING] '{}' FACE NOT FOUND".format(img_path)
-            elif f == -2:  # No landmarks
-                print "[WARNING] '{}' LANDMARKS NOT FOUND".format(img_path)
-            else:  # Everything correct
-                f = dlib2features01(f)
-                f.update(datum)
-                f['img'] = '/'.join(img_path.split('/')[-2:])
-                # TODO: Generate eyes
-                eye_path = hashlib.md5(img_path).hexdigest()
-                for eye in ('eye_left','eye_right'):
-                    f[eye+'_image'] = eye_path+'_'+eye+'.jpg'
-                    extract_eye(
-                        img,
-                        (f[eye+'_x'], f[eye+'_y'],f[eye+'_width'] ,f[eye+'_height']),
-                        config.FEATURES01_EYES_SIZE,
-                        config.PATH_DATA_FEATURES01_DLIB+f[eye+'_image']
-                    )
-                if i==0:
-                    csv_writer = csv.DictWriter(fd, fieldnames=f.keys())
-                    csv_writer.writeheader()
-                if f:
-                    csv_writer.writerow(f)
-                i+=1
-                print i
+            img_original = skimage.io.imread(img_path)
+            i_transform = 0
+            # Data augmentation
+            for img in data_augmentation.data_augmentation(img_original,
+                transformations=[
+                data_augmentation.mirror,
+                data_augmentation.noise,
+                data_augmentation.bilateral,
+                data_augmentation.equalize
+            ]):
+                f = features.extract_features(img)
+                if f == -1:  # No face
+                    print "[WARNING] '{}' FACE NOT FOUND".format(img_path)
+                    skimage.io.imsave("test.jpg", img)
+                elif f == -2:  # No landmarks
+                    print "[WARNING] '{}' LANDMARKS NOT FOUND".format(img_path)
+                else:  # Everything correct
+                    f = dlib2features01(f)
+                    f.update(datum)
+                    f['img'] = '/'.join(img_path.split('/')[-2:])
+                    # TODO: Generate eyes
+                    eye_path = hashlib.md5(img_path).hexdigest()
+                    for eye in ('eye_left','eye_right'):
+                        f[eye+'_image'] = eye_path+'_'+eye+"_"+str(i_transform)+'.jpg'
+                        extract_eye(
+                            img,
+                            (f[eye+'_x'], f[eye+'_y'],f[eye+'_width'] ,f[eye+'_height']),
+                            config.FEATURES01_EYES_SIZE,
+                            config.PATH_DATA_FEATURES01_DLIB+f[eye+'_image']
+                        )
+                    if i==0:
+                        csv_writer = csv.DictWriter(fd, fieldnames=f.keys())
+                        csv_writer.writeheader()
+                    if f:
+                        csv_writer.writerow(f)
+                    i+=1
+                    print i
+                    i_transform += 1
