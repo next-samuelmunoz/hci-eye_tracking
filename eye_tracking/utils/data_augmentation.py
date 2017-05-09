@@ -86,9 +86,8 @@ def loop(data_list):
 
         i = 0
         for img_i in data_augmentation(img, [mirror, noise, bilateral, equalize]):
-            i+=1
-
             io.imsave(mypath.replace(".jpg", "_{}.jpg".format(str(i))), img_i)
+            i+=1
 
 
 if __name__ == "__main__":
