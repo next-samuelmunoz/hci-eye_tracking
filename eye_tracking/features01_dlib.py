@@ -93,6 +93,7 @@ if __name__=="__main__":
                 data_augmentation.bilateral,
                 data_augmentation.equalize
             ]):
+                print "IMG: {}\t\t Transformation: {}".format(i, i_transform)
                 f = features.extract_features(img)
                 if f == -1:  # No face
                     print "[WARNING] '{}' FACE NOT FOUND".format(img_path)
@@ -103,7 +104,7 @@ if __name__=="__main__":
                     f = dlib2features01(f)
                     f.update(datum)
                     f['img'] = '/'.join(img_path.split('/')[-2:])
-                    # TODO: Generate eyes
+                    # Generate eyes
                     eye_path = hashlib.md5(img_path).hexdigest()
                     for eye in ('eye_left','eye_right'):
                         f[eye+'_image'] = eye_path+'_'+eye+"_"+str(i_transform)+'.jpg'
@@ -118,6 +119,5 @@ if __name__=="__main__":
                         csv_writer.writeheader()
                     if f:
                         csv_writer.writerow(f)
-                    i+=1
-                    print i
-                    i_transform += 1
+                i_transform += 1
+            i+=1
