@@ -7,9 +7,11 @@ from pygame.locals import *
 from data import Data
 import skimage
 from skimage import io
-from skimage import transform
 import numpy as np
 import os
+from skimage.restoration import denoise_bilateral
+from skimage.util import random_noise
+from skimage.exposure import equalize_hist
 
 PATH_DATA = '../data/'
 PATH_DATA_RAW = '../data/raw/'
@@ -48,18 +50,23 @@ def mirror(img):
     return img
 
 
-def noise(img):
-    """Add some noise
+def bilateral(img):
+    """Apply bilateral filter
     """
-    yield img
-    pass
+    img = denoise_bilateral(img, sigma_spatial=2, multichannel=True)
+    return img
 
+def noise(img):
+    """Add gaussian noise
+    """
+    img = random_noise(img, mode='gaussian', var=0.01)
+    return img
 
-def luminance(img):
+def equalize(img):
     """Change ilumination
     """
-    yield img
-    pass
+    img = equalize_hist(img, nbins=256, mask=None)
+    return img
 
 
 def loop(data_list):
@@ -74,6 +81,9 @@ def loop(data_list):
             os.makedirs(dest_dir)
 
         img = mirror(img)
+        img = noise(img)
+        img = bilateral(img)
+        img = equalize(img)
         io.imsave(mypath, img)
 
 
