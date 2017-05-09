@@ -43,36 +43,40 @@ def data_augmentation(img, transformations=[]):
 ### Transformations
 #
 
+
 def mirror(img):
     """Vertical symmetry
     """
+    yield img
     img = np.fliplr(img)
-    return img
+    yield img
 
 
 def bilateral(img):
     """Apply bilateral filter
     """
+    yield img
     img = denoise_bilateral(img, sigma_spatial=2, multichannel=True)
-    return img
+    yield img
 
 def noise(img):
     """Add gaussian noise
     """
+    yield img
     img = random_noise(img, mode='gaussian', var=0.01)
-    return img
+    yield img
 
 def equalize(img):
-    """Change ilumination
+    """Equalize histogram
     """
+    yield img
     img = equalize_hist(img, nbins=256, mask=None)
-    return img
+    yield img
 
 
 def loop(data_list):
     for i_data in range(len(data_list)):
         img = io.imread(data_list[i_data]['img_path'])
-        #print(data_list[i_data])
 
         mypath = data_list[i_data]['img_path'].replace(PATH_DATA_RAW, PATH_DATA_AUGMENTED)
         dest_dir = os.path.dirname(mypath)
@@ -80,17 +84,19 @@ def loop(data_list):
         if not os.path.exists(dest_dir):
             os.makedirs(dest_dir)
 
-        img = mirror(img)
-        img = noise(img)
-        img = bilateral(img)
-        img = equalize(img)
-        io.imsave(mypath, img)
+        i = 0
+        for img_i in data_augmentation(img, [mirror, noise, bilateral, equalize]):
+            i+=1
+
+            io.imsave(mypath.replace(".jpg", "_{}.jpg".format(str(i))), img_i)
 
 
-data = Data(PATH_DATA_RAW)
-data_list = list(data.iterate())
-if data_list:
-    print "NUMBER OF SAMPLES: {}".format(len(data_list))
-    loop(data_list)
-else:
-    print "No data"
+if __name__ == "__main__":
+
+    data = Data(PATH_DATA_RAW)
+    data_list = list(data.iterate())
+    if data_list:
+        print "NUMBER OF SAMPLES: {}".format(len(data_list))
+        loop(data_list)
+    else:
+        print "No data"
