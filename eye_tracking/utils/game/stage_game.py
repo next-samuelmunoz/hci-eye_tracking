@@ -48,7 +48,9 @@ class StageGame(object):
                         distance = (((x-mouse_x)**2+(y-mouse_y)**2)**0.5)/self.config.RADIUS
                         if distance<=1:  # Target is hit, take picture!
                             score = int(((1-distance)*6)+5)
+                            pygame.time.wait(150)
                             self.webcam.capture(self.data.create_datum(mouse_x, mouse_y, score))
+                            pygame.time.wait(350)
                             scores.append(score)
                             click = True
                         else:
