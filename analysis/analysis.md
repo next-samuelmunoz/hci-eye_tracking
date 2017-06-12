@@ -119,7 +119,8 @@ LIBRERÍAS:
 # Face Tracking
 * [Comparative](http://ourcodeworld.com/articles/read/151/top-5-best-face-tracking-and-recognition-related-javascript-libraries)
 * [clmtrackr](https://github.com/auduno/clmtrackr)
-	* Demo de [substitución de cara](https://www.auduno.com/clmtrackr/examples/facesubstitution.html) 
+	* Demo de [substitución de cara](https://www.auduno.com/clmtrackr/examples/facesubstitution.html)
 * [tracking.js](https://trackingjs.com/)
+* [Real Eye](https://www.realeye.io/)
 * [headtrackr](https://github.com/auduno/headtrackr)
 	* Demo de controlar streetview con la cabeza: [Street Facing](https://github.com/alexhancock/street-facing)
