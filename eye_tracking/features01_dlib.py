@@ -114,7 +114,7 @@ if __name__=="__main__":
                             config.FEATURES01_EYES_SIZE,
                             config.PATH_DATA_FEATURES01_DLIB+f[eye+'_image']
                         )
-                    if i==0:
+                    if i==0 and i_transform==0:  # First case
                         csv_writer = csv.DictWriter(fd, fieldnames=f.keys())
                         csv_writer.writeheader()
                     if f:
